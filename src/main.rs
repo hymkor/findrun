@@ -12,6 +12,14 @@ fn find_in_paths(filename: &str) -> Option<String> {
     None
 }
 
+fn help() {
+    eprintln!("Usage: findrun [-d] INTERPRETER SCRIPT [ARGS...]");
+    eprintln!("");
+    eprintln!("Searches the first argument containing a dot but no path separators in PATH,");
+    eprintln!("replaces it with its full path if found, and executes it with the specified");
+    eprintln!("interpreter.");
+}
+
 fn findrun(mut args: std::env::Args) -> Result<(), Box<dyn std::error::Error>> {
     let _ = args.next();
     let mut param: Vec<String> = Vec::new();
@@ -26,16 +34,16 @@ fn findrun(mut args: std::env::Args) -> Result<(), Box<dyn std::error::Error>> {
         param.push(arg)
     }
     if param.is_empty() {
-        eprintln!("Usage: findrun [-d] INTERPRETER SCRIPT [ARGS...]");
-        eprintln!("");
-        eprintln!("Searches the first argument containing a dot but no path separators in PATH,");
-        eprintln!("replaces it with its full path if found, and executes it with the specified");
-        eprintln!("interpreter.");
+        help();
         return Ok(());
     }
     let interp = param.remove(0);
     if interp == "-d" {
         println!("{}", param.join(" "));
+        return Ok(());
+    }
+    if interp == "-h" {
+        help();
         return Ok(());
     }
     match std::process::Command::new(interp).args(&param).status() {
