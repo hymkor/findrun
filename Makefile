@@ -13,3 +13,5 @@ release:
 
 manifest:
 	make-scoop-manifest *-windows-*.zip > $(NAME).json
+
+.PHONY: dist release build
